@@ -10,11 +10,11 @@ export const StudentLayout: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900 w-full overflow-x-hidden">
       {/* Left Sidebar */}
-      <Sidebar unreadCount={8} openContactModal={() => setShowContactModal(true)} />
+      <Sidebar unreadCount={0} openContactModal={() => setShowContactModal(true)} />
 
       {/* Main Content Pane */}
       <div className="flex-1 flex flex-col min-w-0 bg-slate-50">
-        <TopNavbar unreadCount={8} />
+        <TopNavbar unreadCount={0} />
         <main className="flex-1 overflow-y-auto bg-slate-50">
           <Outlet />
         </main>
@@ -37,13 +37,13 @@ export const StudentLayout: React.FC = () => {
             <div className="space-y-3 text-xs text-slate-600">
               <div className="p-3.5 rounded-xl bg-purple-50 border border-purple-200">
                 <h4 className="font-bold text-slate-900">Direct Lab Helpline</h4>
-                <p className="text-purple-700 font-mono text-sm font-bold mt-0.5">+91 98765 43210</p>
+                <p className="text-purple-700 font-mono text-sm font-bold mt-0.5">+91 95669 94805</p>
                 <p className="text-[10px] text-slate-500 mt-1">Available 24/7 during semester lab hours</p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200">
                 <h4 className="font-bold text-slate-900">Email Desk Support</h4>
-                <p className="text-blue-700 font-mono text-sm font-bold mt-0.5">support@smartcampus.edu</p>
+                <p className="text-blue-700 font-mono text-sm font-bold mt-0.5">gopinath.ece@karpagamtech.ac.in</p>
               </div>
             </div>
 

@@ -82,18 +82,44 @@ export const createBooking = async (req: AuthRequest, res: Response) => {
       }
     });
 
+    // 1. Send confirmation notification to the student
     await prisma.notification.create({
       data: {
         userId,
-        title: 'Booking Submitted',
-        message: `Your booking request for ${equipment.name} on ${date} (${startTime} - ${endTime}) is PENDING staff approval.`,
+        title: 'Permission Request Submitted',
+        message: `Your lab booking request for ${equipment.name} on ${date} (${startTime} - ${endTime}) is PENDING Faculty & Admin permission approval.`,
         type: 'INFO'
       }
     });
 
+    // 2. Send notification to all Faculty (STAFF) and Admin (ADMIN) users for permission request
+    const staffAndAdmins = await prisma.user.findMany({
+      where: { role: { in: ['STAFF', 'ADMIN'] } },
+      select: { id: true }
+    });
+
+    const studentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true }
+    });
+
+    const studentName = studentUser?.name || 'A student';
+
+    for (const recipient of staffAndAdmins) {
+      await prisma.notification.create({
+        data: {
+          userId: recipient.id,
+          title: 'New Permission Request',
+          message: `${studentName} requested lab booking permission for ${equipment.name} (${equipment.lab.name}) on ${date} (${startTime} - ${endTime}). Permission approval pending.`,
+          type: 'WARNING',
+          linkUrl: '/staff/dashboard'
+        }
+      });
+    }
+
     res.status(201).json({
       success: true,
-      message: 'Booking request created successfully! Waiting for staff approval.',
+      message: 'Booking permission request created successfully! Sent for Faculty & Admin approval.',
       data: booking
     });
   } catch (error: any) {

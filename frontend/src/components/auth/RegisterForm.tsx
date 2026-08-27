@@ -72,15 +72,12 @@ export const RegisterForm: React.FC = () => {
         {/* LEFT COLUMN: Tagline & 3D Interactive Campus */}
         <div className="lg:col-span-7 space-y-6">
           <div className="space-y-3">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
-              Join the future of{' '}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-tight uppercase">
+              JOIN THE FUTURE OF{' '}
               <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Smart Campus Innovation.
+                SMART CAMPUS INNOVATION.
               </span>
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed font-medium">
-              Create your account to unlock real-time lab slot reservations, equipment tracking, and 3D campus exploration.
-            </p>
           </div>
 
           {/* Interactive 3D Realistic Campus Box */}
@@ -119,7 +116,6 @@ export const RegisterForm: React.FC = () => {
                 <Sparkles className="w-3 h-3 text-blue-700" /> ACCOUNT REGISTRATION
               </span>
               <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Create Your Account</h2>
-              <p className="text-xs text-slate-600 mt-1 font-medium">Access Karpagam Institute 3D Smart Campus</p>
             </div>
 
             {/* Registration Role Selector Tabs */}
@@ -255,7 +251,7 @@ export const RegisterForm: React.FC = () => {
                   <Phone className="w-4 h-4 text-blue-600 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="tel"
-                    placeholder="+91 98765 43210"
+                    placeholder="Enter phone number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white"

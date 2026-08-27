@@ -34,7 +34,7 @@ async function main() {
       email: 'admin@smartcampus.edu',
       password: adminPasswordHash,
       role: 'ADMIN',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+      avatar: null,
       adminProfile: {
         create: {
           department: 'Campus Administration & IT Services',
@@ -51,7 +51,7 @@ async function main() {
       email: 'rajesh.k@smartcampus.edu',
       password: staffPasswordHash,
       role: 'STAFF',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+      avatar: null,
       staffProfile: {
         create: {
           employeeId: 'STF001',
@@ -69,7 +69,7 @@ async function main() {
       email: 'meena.s@smartcampus.edu',
       password: staffPasswordHash,
       role: 'STAFF',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
+      avatar: null,
       staffProfile: {
         create: {
           employeeId: 'STF002',
@@ -88,7 +88,7 @@ async function main() {
       email: 'karthik.r@smartcampus.edu',
       password: passwordHash,
       role: 'STUDENT',
-      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200',
+      avatar: null,
       studentProfile: {
         create: {
           registerNo: '23CSE001',
@@ -108,7 +108,7 @@ async function main() {
       email: '24ita17@karpagam.edu',
       password: passwordHash,
       role: 'STUDENT',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+      avatar: null,
       studentProfile: {
         create: {
           registerNo: '24ita17',
@@ -127,7 +127,7 @@ async function main() {
       email: 'ananya.v@smartcampus.edu',
       password: passwordHash,
       role: 'STUDENT',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200',
+      avatar: null,
       studentProfile: {
         create: {
           registerNo: '23ECE014',

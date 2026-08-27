@@ -95,7 +95,7 @@ export const MyBookings: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-black text-slate-900">{b.equipment?.name || 'Lab Equipment'}</h4>
                       <span className={`px-2.5 py-0.5 rounded text-[10px] border ${statusBg}`}>
-                        {b.status}
+                        {b.status === 'PENDING' ? 'PENDING APPROVAL (FACULTY & ADMIN)' : b.status}
                       </span>
                     </div>
 

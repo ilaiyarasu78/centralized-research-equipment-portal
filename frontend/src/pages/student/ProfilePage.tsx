@@ -17,8 +17,8 @@ export const ProfilePage: React.FC = () => {
   const [registerNo, setRegisterNo] = useState(user?.registerNo || user?.employeeId || '');
   const [department, setDepartment] = useState(user?.department || 'Information Technology');
   const [college, setCollege] = useState(user?.college || 'Karpagam Institute of Technology');
-  const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
-  const [avatar, setAvatar] = useState(user?.avatar || 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [avatar, setAvatar] = useState(user?.avatar && typeof user.avatar === 'string' && !user.avatar.includes('images.unsplash.com') ? user.avatar : '');
 
   useEffect(() => {
     if (user) {
@@ -27,8 +27,8 @@ export const ProfilePage: React.FC = () => {
       setRegisterNo(user.registerNo || user.employeeId || '');
       setDepartment(user.department || 'Information Technology');
       setCollege(user.college || 'Karpagam Institute of Technology');
-      setPhone(user.phone || '+91 98765 43210');
-      if (user.avatar) setAvatar(user.avatar);
+      setPhone(user.phone || '');
+      setAvatar(user.avatar && typeof user.avatar === 'string' && !user.avatar.includes('images.unsplash.com') ? user.avatar : '');
     }
   }, [user]);
 
@@ -150,11 +150,17 @@ export const ProfilePage: React.FC = () => {
               }}
               title={isEditing ? 'Click to select new profile picture from gallery' : undefined}
             >
-              <img
-                src={avatar}
-                alt={name}
-                className="w-20 h-20 rounded-2xl object-cover border-2 border-purple-600 shadow-md"
-              />
+              {avatar ? (
+                <img
+                  src={avatar}
+                  alt={name}
+                  className="w-20 h-20 rounded-2xl object-cover border-2 border-purple-600 shadow-md"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-2xl bg-purple-100 border-2 border-purple-600 flex items-center justify-center text-purple-700 shadow-md">
+                  <UserIcon className="w-10 h-10 text-purple-600" />
+                </div>
+              )}
               {/* Camera Icon Overlay ONLY rendered when inside Edit Mode */}
               {isEditing && (
                 <div className="absolute inset-0 bg-slate-900/50 rounded-2xl flex flex-col items-center justify-center text-white transition-opacity">
@@ -289,15 +295,14 @@ export const ProfilePage: React.FC = () => {
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Contact Phone</span>
             {!isEditing ? (
-              <p className="text-xs font-bold text-slate-900">{phone || 'N/A'}</p>
+              <p className="text-xs font-bold text-slate-900">{phone || 'Not Provided'}</p>
             ) : (
               <input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98765 43210"
+                placeholder="Enter phone number"
                 className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-purple-600"
-                required
               />
             )}
           </div>

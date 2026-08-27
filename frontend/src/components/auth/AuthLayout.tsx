@@ -35,7 +35,7 @@ export const AuthLayout: React.FC = () => {
               href="#help"
               onClick={(e) => {
                 e.preventDefault();
-                alert('For IT & Lab access support, contact IT Helpdesk at support@karpagam.edu or +91 98765 43210');
+                alert('For IT & Lab access support, contact IT Helpdesk at gopinath.ece@karpagamtech.ac.in or +91 95669 94805');
               }}
               className="text-slate-600 hover:text-slate-900 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
             >

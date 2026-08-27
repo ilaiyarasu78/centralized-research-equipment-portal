@@ -9,7 +9,7 @@ interface TopNavbarProps {
   onSearch?: (term: string) => void;
 }
 
-export const TopNavbar: React.FC<TopNavbarProps> = ({ unreadCount = 8, onSearch }) => {
+export const TopNavbar: React.FC<TopNavbarProps> = ({ unreadCount = 0, onSearch }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -82,17 +82,6 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ unreadCount = 8, onSearch 
 
         {/* Right Controls */}
         <div className="flex items-center gap-3">
-          {/* Message Icon */}
-          <button
-            onClick={() => navigate('/student/my-issues')}
-            className="relative p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 hover:text-purple-700 hover:bg-purple-50 transition-all cursor-pointer"
-          >
-            <MessageSquare className="w-4 h-4" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 text-white text-[9px] font-bold flex items-center justify-center rounded-full shadow-sm">
-              3
-            </span>
-          </button>
-
           {/* Notification Icon */}
           <button
             onClick={() => navigate('/student/notifications')}
@@ -112,11 +101,17 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ unreadCount = 8, onSearch 
               onClick={() => setShowUserDropdown(!showUserDropdown)}
               className="flex items-center gap-2.5 pl-2 pr-3 py-1 rounded-full bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer shadow-sm"
             >
-              <img
-                src={user?.avatar || 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200'}
-                alt={user?.name || 'User'}
-                className="w-8 h-8 rounded-full object-cover border-2 border-purple-600"
-              />
+              {user?.avatar && typeof user.avatar === 'string' && !user.avatar.includes('images.unsplash.com') ? (
+                <img
+                  src={user.avatar}
+                  alt={user?.name || 'User'}
+                  className="w-8 h-8 rounded-full object-cover border-2 border-purple-600"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-purple-100 border-2 border-purple-600 flex items-center justify-center text-purple-700 font-bold shrink-0">
+                  <UserIcon className="w-4 h-4 text-purple-600" />
+                </div>
+              )}
               <div className="text-left hidden sm:block">
                 <h4 className="text-xs font-bold text-slate-900 leading-tight">{user?.name || 'Karthik R'}</h4>
                 <p className="text-[10px] text-purple-700 font-semibold leading-none">

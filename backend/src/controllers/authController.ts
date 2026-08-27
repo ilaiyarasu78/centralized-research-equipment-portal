@@ -34,7 +34,7 @@ export const registerStudent = async (req: Request, res: Response) => {
           email: cleanEmail,
           password: passwordHash,
           role: 'STAFF',
-          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+          avatar: null,
           staffProfile: {
             create: {
               employeeId: cleanId,
@@ -83,7 +83,7 @@ export const registerStudent = async (req: Request, res: Response) => {
           email: cleanEmail,
           password: passwordHash,
           role: 'STUDENT',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+          avatar: null,
           studentProfile: {
             create: {
               registerNo: cleanId,

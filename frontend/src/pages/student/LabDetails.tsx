@@ -127,10 +127,22 @@ export const LabDetails: React.FC = () => {
 
           {/* Image */}
           <img
-            src={lab.image && !lab.image.includes('placeholder') ? lab.image : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=400'}
+            src={
+              lab.image && typeof lab.image === 'string' && lab.image.startsWith('http') && !lab.image.includes('placeholder')
+                ? lab.image
+                : (lab.name || '').toUpperCase().includes('LABVIEW')
+                ? 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&q=80&w=600'
+                : (lab.name || '').toUpperCase().includes('CADENCE')
+                ? 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=600'
+                : (lab.name || '').toUpperCase().includes('MATLAB')
+                ? 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600'
+                : (lab.name || '').toUpperCase().includes('TEXAS')
+                ? 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=600'
+                : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600'
+            }
             alt={lab.name}
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=400';
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600';
             }}
             className="w-full lg:w-72 h-44 rounded-2xl object-cover border border-slate-200 shadow-md shrink-0"
           />

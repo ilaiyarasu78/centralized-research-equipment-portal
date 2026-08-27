@@ -31,7 +31,7 @@ export const StudentDashboard: React.FC = () => {
   const [labs, setLabs] = useState<Lab[]>([]);
   const [equipmentList, setEquipmentList] = useState<Equipment[]>([]);
   const [myBookings, setMyBookings] = useState<Booking[]>([]);
-  const [selectedTab, setSelectedTab] = useState('All Labs');
+  const [selectedTab, setSelectedTab] = useState('ALL LABS');
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedStatus, setSelectedStatus] = useState('All Status');
@@ -90,8 +90,13 @@ export const StudentDashboard: React.FC = () => {
   // Multi-Filter Logic for All Categories, All Status, Search Query, and Selected Tab
   const filteredLabs = labs.filter((lab) => {
     // 1. Tab Filter
-    if (selectedTab !== 'All Labs' && lab.name.toUpperCase() !== selectedTab.toUpperCase()) {
-      return false;
+    if (selectedTab !== 'ALL LABS') {
+      const tabUpper = selectedTab.toUpperCase();
+      const labUpper = lab.name.toUpperCase();
+      const cleanTab = tabUpper.replace(' LAB', '');
+      if (labUpper !== tabUpper && !labUpper.includes(cleanTab)) {
+        return false;
+      }
     }
 
     // 2. Category Filter
@@ -185,19 +190,19 @@ export const StudentDashboard: React.FC = () => {
           {/* Filter Tabs Row */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 scrollbar-none">
             {[
-              'All Labs',
+              'ALL LABS',
               'IDEA LAB',
               'CADENCE LAB',
               'SYNOPSYS LAB',
-              'MATLAB',
-              'LABVIEW',
-              'Texas Innovation Lab',
-              'Library'
+              'MATLAB LAB',
+              'LABVIEW LAB',
+              'TEXAS INNOVATION LAB',
+              'LIBRARY'
             ].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setSelectedTab(tab)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase whitespace-nowrap transition-all cursor-pointer ${
                   selectedTab === tab
                     ? 'bg-purple-600 text-white shadow-md border border-purple-600'
                     : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200 shadow-sm'
@@ -257,7 +262,7 @@ export const StudentDashboard: React.FC = () => {
                   setSelectedCategory('All Categories');
                   setSelectedStatus('All Status');
                   setSearchQuery('');
-                  setSelectedTab('All Labs');
+                  setSelectedTab('ALL LABS');
                 }}
                 className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
               >
@@ -284,7 +289,7 @@ export const StudentDashboard: React.FC = () => {
                     setSelectedCategory('All Categories');
                     setSelectedStatus('All Status');
                     setSearchQuery('');
-                    setSelectedTab('All Labs');
+                    setSelectedTab('ALL LABS');
                   }}
                   className="mt-3 px-4 py-2 bg-[#800020] text-white text-xs font-bold rounded-xl shadow-sm cursor-pointer"
                 >
@@ -316,13 +321,24 @@ export const StudentDashboard: React.FC = () => {
                     btnBg = 'bg-amber-600 hover:bg-amber-500';
                   }
 
-                  const defaultImage = lab.name.includes('LABVIEW')
+                  const upperName = (lab.name || '').toUpperCase();
+                  const labPhoto = (lab.image && typeof lab.image === 'string' && lab.image.startsWith('http') && !lab.image.includes('placeholder'))
+                    ? lab.image
+                    : upperName.includes('LABVIEW')
                     ? 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&q=80&w=400'
-                    : lab.name.includes('CADENCE')
+                    : upperName.includes('CADENCE')
                     ? 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=400'
-                    : lab.name.includes('IDEA')
+                    : upperName.includes('IDEA')
                     ? 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=400'
-                    : 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=400';
+                    : upperName.includes('SYNOPSYS')
+                    ? 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=400'
+                    : upperName.includes('MATLAB')
+                    ? 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=400'
+                    : upperName.includes('TEXAS')
+                    ? 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=400'
+                    : upperName.includes('LIBRARY')
+                    ? 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=400'
+                    : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=400';
 
                   return (
                     <div
@@ -341,12 +357,12 @@ export const StudentDashboard: React.FC = () => {
                             </span>
                           </div>
                           <img
-                            src={lab.image && !lab.image.includes('placeholder') ? lab.image : defaultImage}
+                            src={labPhoto}
                             alt={lab.name}
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = defaultImage;
+                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=400';
                             }}
-                            className="w-16 h-16 rounded-xl object-cover border border-slate-200 group-hover:scale-105 transition-transform shrink-0"
+                            className="w-16 h-16 rounded-xl object-cover border border-slate-200 group-hover:scale-105 transition-transform shrink-0 shadow-xs"
                           />
                         </div>
 
@@ -379,27 +395,6 @@ export const StudentDashboard: React.FC = () => {
                     </div>
                   );
                 })}
-
-                {/* "Can't find what you need?" Card */}
-                <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-50 via-indigo-50 to-white border-dashed border-purple-300 flex flex-col justify-between shadow-sm">
-                  <div>
-                    <div className="w-10 h-10 rounded-xl bg-[#800020] text-white flex items-center justify-center mb-3 shadow-md">
-                      <HelpCircle className="w-5 h-5" />
-                    </div>
-                    <h4 className="text-sm font-black text-slate-900">Can't find what you need?</h4>
-                    <p className="text-xs text-slate-700 mt-1 font-bold">
-                      Request new equipment or special access to a campus lab.
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => navigate('/student/request-history')}
-                    className="w-full mt-4 py-2.5 bg-white text-[#800020] border border-red-300 hover:bg-red-50 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Request Equipment
-                  </button>
-                </div>
               </div>
             )}
           </div>

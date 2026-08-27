@@ -50,7 +50,7 @@ interface SidebarProps {
   openContactModal: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ unreadCount = 8, openContactModal }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ unreadCount = 0, openContactModal }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -107,20 +107,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ unreadCount = 8, openContactMo
           >
             <AlertTriangle className="w-4 h-4 text-amber-600" />
             Report Issue
-          </NavLink>
-
-          <NavLink
-            to="/student/my-issues"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                isActive
-                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20 font-bold'
-                  : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50'
-              }`
-            }
-          >
-            <FileText className="w-4 h-4 text-blue-600" />
-            My Issues
           </NavLink>
 
           <NavLink

@@ -9,32 +9,7 @@ export const HelpSupport: React.FC = () => {
           <HelpCircle className="w-5 h-5 text-purple-600" />
           Campus Help & Support Center
         </h1>
-        <p className="text-xs text-slate-600 font-bold">Frequently asked questions, lab safety rules and 24/7 emergency contacts</p>
-      </div>
-
-      {/* Emergency Contacts Card */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <h3 className="text-sm font-black text-slate-900 mb-3 flex items-center gap-2 uppercase">
-          <ShieldAlert className="w-4 h-4 text-red-600" />
-          Urgent Lab Support & Emergency Contacts
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-            <h5 className="font-black text-slate-900">Central Lab Desk</h5>
-            <p className="text-slate-600 font-bold">Phone: +91 98765 43210</p>
-            <p className="text-purple-700 font-extrabold">support@smartcampus.edu</p>
-          </div>
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-            <h5 className="font-black text-slate-900">Electrical Safety Officer</h5>
-            <p className="text-slate-600 font-bold">Phone: +91 98765 11111</p>
-            <p className="text-purple-700 font-extrabold">safety@smartcampus.edu</p>
-          </div>
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-            <h5 className="font-black text-slate-900">IT Infrastructure Desk</h5>
-            <p className="text-slate-600 font-bold">Phone: +91 98765 22222</p>
-            <p className="text-purple-700 font-extrabold">ithelp@smartcampus.edu</p>
-          </div>
-        </div>
+        <p className="text-xs text-slate-600 font-bold">Frequently asked questions and lab safety rules</p>
       </div>
 
       {/* FAQ Grid */}
