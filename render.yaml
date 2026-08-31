@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: smart-campus-backend
+    env: node
+    plan: free
+    region: singapore # Default to a close region, can be changed
+    buildCommand: "cd backend && npm install && npm run build && npx prisma db push && npx prisma db seed"
+    startCommand: "cd backend && npm run start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DATABASE_URL
+        value: "file:./dev.db"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        value: "https://rd-resource-sharing-portal.netlify.app" # Default fallback, user can update this to their frontend URL after Vercel/Netlify deploy

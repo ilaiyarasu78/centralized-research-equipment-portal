@@ -156,7 +156,7 @@ export const StudentDashboard: React.FC = () => {
               <Boxes className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-sm font-black text-slate-900 leading-tight">15</p>
+              <p className="text-sm font-black text-slate-900 leading-tight">{labs.length > 0 ? labs.length : 8}</p>
               <p className="text-[10px] font-bold text-blue-700">Total Labs Across Campus</p>
             </div>
           </div>
@@ -166,7 +166,7 @@ export const StudentDashboard: React.FC = () => {
               <Wrench className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-sm font-black text-slate-900 leading-tight">240+</p>
+              <p className="text-sm font-black text-slate-900 leading-tight">{equipmentList.length > 0 ? `${equipmentList.length}+` : '240+'}</p>
               <p className="text-[10px] font-bold text-purple-700">Total Equipment Available</p>
             </div>
           </div>
@@ -176,7 +176,7 @@ export const StudentDashboard: React.FC = () => {
               <Calendar className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-sm font-black text-slate-900 leading-tight">48</p>
+              <p className="text-sm font-black text-slate-900 leading-tight">{myBookings.length > 0 ? myBookings.length : 48}</p>
               <p className="text-[10px] font-bold text-emerald-700">My Bookings This Month</p>
             </div>
           </div>
@@ -197,14 +197,15 @@ export const StudentDashboard: React.FC = () => {
               'MATLAB LAB',
               'LABVIEW LAB',
               'TEXAS INNOVATION LAB',
-              'LIBRARY'
+              'LIBRARY',
+              'ROBOTICS LAB'
             ].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setSelectedTab(tab)}
                 className={`px-4 py-2 rounded-xl text-xs font-black uppercase whitespace-nowrap transition-all cursor-pointer ${
                   selectedTab === tab
-                    ? 'bg-purple-600 text-white shadow-md border border-purple-600'
+                    ? 'bg-purple-100 text-purple-950 border border-purple-300 shadow-sm font-black'
                     : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200 shadow-sm'
                 }`}
               >
@@ -240,6 +241,8 @@ export const StudentDashboard: React.FC = () => {
                 <option value="Computing" className="font-bold text-slate-900 bg-white py-1">Computing</option>
                 <option value="Virtual Instrumentation" className="font-bold text-slate-900 bg-white py-1">Virtual Instrumentation</option>
                 <option value="Embedded Systems" className="font-bold text-slate-900 bg-white py-1">Embedded Systems</option>
+                <option value="Knowledge Center" className="font-bold text-slate-900 bg-white py-1">Knowledge Center</option>
+                <option value="Robotics & AI" className="font-bold text-slate-900 bg-white py-1">Robotics & AI</option>
               </select>
             </div>
 
@@ -264,9 +267,9 @@ export const StudentDashboard: React.FC = () => {
                   setSearchQuery('');
                   setSelectedTab('ALL LABS');
                 }}
-                className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
+                className="w-full py-2.5 bg-purple-100 hover:bg-purple-200 text-purple-950 border border-purple-300 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
               >
-                <Filter className="w-3.5 h-3.5" />
+                <Filter className="w-3.5 h-3.5 text-purple-700" />
                 Reset
               </button>
             </div>
@@ -299,26 +302,22 @@ export const StudentDashboard: React.FC = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {filteredLabs.map((lab) => {
-                  let tagBg = 'bg-blue-100 text-blue-900 border-blue-300 font-extrabold';
-                  let btnBg = 'bg-[#0284c7] hover:bg-[#0369a1]';
+                  let tagBg = 'bg-purple-100 text-purple-900 border-purple-300 font-extrabold';
+                  let btnBg = 'bg-purple-100 hover:bg-purple-200 text-purple-950 border border-purple-300 shadow-xs';
                   if (lab.name.includes('CADENCE')) {
                     tagBg = 'bg-emerald-100 text-emerald-900 border-emerald-300 font-extrabold';
-                    btnBg = 'bg-emerald-600 hover:bg-emerald-500';
                   } else if (lab.name.includes('SYNOPSYS')) {
                     tagBg = 'bg-indigo-100 text-indigo-900 border-indigo-300 font-extrabold';
-                    btnBg = 'bg-indigo-600 hover:bg-indigo-500';
                   } else if (lab.name.includes('MATLAB')) {
                     tagBg = 'bg-orange-100 text-orange-900 border-orange-300 font-extrabold';
-                    btnBg = 'bg-orange-600 hover:bg-orange-500';
                   } else if (lab.name.includes('LABVIEW')) {
                     tagBg = 'bg-cyan-100 text-cyan-900 border-cyan-300 font-extrabold';
-                    btnBg = 'bg-cyan-600 hover:bg-cyan-500';
                   } else if (lab.name.includes('TEXAS')) {
                     tagBg = 'bg-pink-100 text-pink-900 border-pink-300 font-extrabold';
-                    btnBg = 'bg-pink-600 hover:bg-pink-500';
                   } else if (lab.name.includes('LIBRARY')) {
                     tagBg = 'bg-amber-100 text-amber-900 border-amber-300 font-extrabold';
-                    btnBg = 'bg-amber-600 hover:bg-amber-500';
+                  } else if (lab.name.includes('ROBOTICS')) {
+                    tagBg = 'bg-rose-100 text-rose-900 border-rose-300 font-extrabold';
                   }
 
                   const upperName = (lab.name || '').toUpperCase();
@@ -338,7 +337,12 @@ export const StudentDashboard: React.FC = () => {
                     ? 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=400'
                     : upperName.includes('LIBRARY')
                     ? 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=400'
+                    : upperName.includes('ROBOTICS')
+                    ? 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=400'
                     : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=400';
+
+                  const totalEq = lab.totalEquipments ?? lab.equipments?.length ?? 30;
+                  const availEq = lab.availableEquipments ?? lab.equipments?.filter((e) => e.status === 'AVAILABLE').length ?? 12;
 
                   return (
                     <div
@@ -349,7 +353,7 @@ export const StudentDashboard: React.FC = () => {
                         {/* Lab Header & Tag */}
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <div>
-                            <h4 className="text-base font-black text-purple-900 group-hover:text-blue-700 transition-colors uppercase">
+                            <h4 className="text-base font-black text-purple-950 group-hover:text-purple-700 transition-colors uppercase">
                               {lab.name}
                             </h4>
                             <span className={`inline-block px-2.5 py-0.5 mt-1 rounded text-[10px] border ${tagBg}`}>
@@ -376,19 +380,19 @@ export const StudentDashboard: React.FC = () => {
                         <div className="flex items-center justify-between pt-3 border-t border-slate-100 mb-3 text-xs">
                           <div className="flex items-center gap-1.5 text-slate-800 font-extrabold">
                             <Wrench className="w-3.5 h-3.5 text-purple-600" />
-                            <span><strong>{lab.totalEquipments || 30}</strong> Equipment</span>
+                            <span><strong>{totalEq}</strong> Equipment</span>
                           </div>
                           <div className="flex items-center gap-1.5 text-slate-800 font-extrabold">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                            <span><strong>{lab.availableEquipments || 12}</strong> Available</span>
+                            <span><strong>{availEq}</strong> Available</span>
                           </div>
                         </div>
 
                         <button
                           onClick={() => navigate(`/student/labs/${lab.id}`)}
-                          className={`w-full py-2.5 ${btnBg} text-white text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer`}
+                          className={`w-full py-2.5 ${btnBg} text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer`}
                         >
-                          <Eye className="w-3.5 h-3.5" />
+                          <Eye className="w-3.5 h-3.5 text-purple-700" />
                           View Lab
                         </button>
                       </div>
@@ -503,25 +507,6 @@ export const StudentDashboard: React.FC = () => {
                   </span>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Quick Sign-In Switcher Widget */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm">
-            <h4 className="text-xs font-black text-slate-500 uppercase tracking-wider mb-2">Switch Active Portal</h4>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => navigate('/staff/dashboard')}
-                className="py-2.5 px-3 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-900 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <Shield className="w-3.5 h-3.5 text-blue-600" /> Staff Portal
-              </button>
-              <button
-                onClick={() => navigate('/admin/dashboard')}
-                className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <UserCheck className="w-3.5 h-3.5 text-slate-700" /> Admin Console
-              </button>
             </div>
           </div>
         </div>

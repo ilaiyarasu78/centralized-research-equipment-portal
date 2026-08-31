@@ -26,15 +26,46 @@ export const CampusMap: React.FC = () => {
   const fetchLocations = async () => {
     try {
       const res = await api.get('/map-locations');
-      if (res.data.success) {
+      if (res.data.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
         setLocations(res.data.data);
+      } else {
+        // Fallback campus map pins if API returns empty
+        fetchLabsForFallback();
       }
     } catch (e) {
       console.error(e);
+      fetchLabsForFallback();
+    }
+  };
+
+  const fetchLabsForFallback = async () => {
+    try {
+      const res = await api.get('/labs');
+      if (res.data.success && Array.isArray(res.data.data)) {
+        const mapped = res.data.data.map((l: any, i: number) => ({
+          id: l.id,
+          name: l.name,
+          category: l.category,
+          description: l.description,
+          floor: l.location.includes('1st') ? '1st Floor' : l.location.includes('2nd') ? '2nd Floor' : l.location.includes('3rd') ? '3rd Floor' : l.location.includes('4th') ? '4th Floor' : 'Ground Floor',
+          building: l.location.split(',')[0] || 'Main Block',
+          lat: 12.9715 + (i * 0.0012) - 0.003,
+          lng: 77.5942 + (i * 0.0014) - 0.003,
+          labId: l.id
+        }));
+        setLocations(mapped);
+      }
+    } catch (err) {
+      console.error('Failed fallback fetch', err);
     }
   };
 
   const centerPosition: [number, number] = [12.9716, 77.5946];
+
+  const filteredLocations = locations.filter((loc) => {
+    if (selectedFloor === 'All') return true;
+    return (loc.floor || '').toLowerCase().includes(selectedFloor.toLowerCase());
+  });
 
   return (
     <div className="p-6 space-y-6 max-w-[1600px] mx-auto">
@@ -48,12 +79,12 @@ export const CampusMap: React.FC = () => {
         </div>
 
         {/* Floor controls */}
-        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
+        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10 overflow-x-auto">
           {['All', 'Ground Floor', '1st Floor', '2nd Floor', '3rd Floor', '4th Floor'].map((floor) => (
             <button
               key={floor}
               onClick={() => setSelectedFloor(floor)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 selectedFloor === floor ? 'bg-purple-600 text-white shadow-md' : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -71,7 +102,7 @@ export const CampusMap: React.FC = () => {
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           />
 
-          {locations.map((loc) => (
+          {filteredLocations.map((loc) => (
             <Marker key={loc.id} position={[loc.lat, loc.lng]} icon={customIcon}>
               <Popup className="custom-leaflet-popup">
                 <div className="p-2 space-y-2 min-w-[200px]">
@@ -84,7 +115,7 @@ export const CampusMap: React.FC = () => {
                   {loc.labId && (
                     <button
                       onClick={() => navigate(`/student/labs/${loc.labId}`)}
-                      className="w-full mt-2 py-1 bg-purple-600 text-white text-xs font-bold rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-1"
+                      className="w-full mt-2 py-1 bg-purple-600 text-white text-xs font-bold rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5" /> Explore Lab
                     </button>
@@ -97,9 +128,9 @@ export const CampusMap: React.FC = () => {
 
         {/* Map Legend Overlay */}
         <div className="absolute top-4 right-4 z-20 bg-[#121828]/90 backdrop-blur-md p-4 rounded-2xl border border-white/10 max-w-xs space-y-2">
-          <h4 className="text-xs font-bold text-white uppercase tracking-wider">Campus Pins ({locations.length})</h4>
+          <h4 className="text-xs font-bold text-white uppercase tracking-wider">Campus Pins ({filteredLocations.length})</h4>
           <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-            {locations.map((l) => (
+            {filteredLocations.map((l) => (
               <div
                 key={l.id}
                 onClick={() => {
@@ -109,7 +140,7 @@ export const CampusMap: React.FC = () => {
               >
                 <div>
                   <h5 className="font-bold text-white leading-tight">{l.name}</h5>
-                  <p className="text-[10px] text-purple-300">{l.category}</p>
+                  <p className="text-[10px] text-purple-300">{l.category} • {l.floor}</p>
                 </div>
                 <MapPin className="w-4 h-4 text-purple-400 shrink-0" />
               </div>

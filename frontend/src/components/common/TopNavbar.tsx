@@ -130,24 +130,14 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ unreadCount = 0, onSearch 
                 <button
                   onClick={() => {
                     setShowUserDropdown(false);
-                    navigate('/student/profile');
+                    if (user?.role === 'ADMIN') navigate('/admin/profile');
+                    else if (user?.role === 'STAFF') navigate('/staff/profile');
+                    else navigate('/student/profile');
                   }}
                   className="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-purple-700 flex items-center gap-2 cursor-pointer"
                 >
                   <UserIcon className="w-3.5 h-3.5 text-purple-600" />
                   View Profile
-                </button>
-                <button
-                  onClick={() => {
-                    setShowUserDropdown(false);
-                    if (user?.role === 'ADMIN') navigate('/admin/dashboard');
-                    else if (user?.role === 'STAFF') navigate('/staff/dashboard');
-                    else navigate('/student/dashboard');
-                  }}
-                  className="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-purple-700 flex items-center gap-2 cursor-pointer"
-                >
-                  <Settings className="w-3.5 h-3.5 text-blue-600" />
-                  Switch Portal
                 </button>
                 <div className="border-t border-slate-100 mt-1 pt-1">
                   <button

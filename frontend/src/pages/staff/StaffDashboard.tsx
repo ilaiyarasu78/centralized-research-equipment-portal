@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, CheckCircle2, XCircle, Wrench, AlertTriangle, Clock, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ShieldCheck, CheckCircle2, XCircle, Wrench, AlertTriangle, Clock, RefreshCw, Users, ArrowRight } from 'lucide-react';
 import { api } from '../../services/api';
 import { Booking, Issue, Equipment } from '../../types';
 
 export const StaffDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
   const [assignedIssues, setAssignedIssues] = useState<Issue[]>([]);
   const [equipmentList, setEquipmentList] = useState<Equipment[]>([]);
+  const [studentStats, setStudentStats] = useState<any>(null);
   const [rejectionReason, setRejectionReason] = useState('');
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
 
@@ -17,15 +20,34 @@ export const StaffDashboard: React.FC = () => {
   const fetchStaffData = async () => {
     try {
       const bRes = await api.get('/bookings?status=PENDING');
-      if (bRes.data.success) setPendingBookings(bRes.data.data);
+      if (bRes.data?.success && Array.isArray(bRes.data.data)) {
+        setPendingBookings(bRes.data.data);
+      } else {
+        setPendingBookings([]);
+      }
 
       const iRes = await api.get('/issues?status=OPEN');
-      if (iRes.data.success) setAssignedIssues(iRes.data.data);
+      if (iRes.data?.success && Array.isArray(iRes.data.data)) {
+        setAssignedIssues(iRes.data.data);
+      } else {
+        setAssignedIssues([]);
+      }
 
       const eRes = await api.get('/equipment');
-      if (eRes.data.success) setEquipmentList(eRes.data.data);
+      if (eRes.data?.success && Array.isArray(eRes.data.data)) {
+        setEquipmentList(eRes.data.data);
+      } else {
+        setEquipmentList([]);
+      }
+
+      const stRes = await api.get('/faculty/students/stats');
+      if (stRes.data?.success && typeof stRes.data.data === 'object' && !Array.isArray(stRes.data.data)) {
+        setStudentStats(stRes.data.data);
+      }
     } catch (e) {
-      console.error(e);
+      console.error('Staff dashboard fetch error', e);
+      setPendingBookings([]);
+      setAssignedIssues([]);
     }
   };
 
@@ -74,10 +96,30 @@ export const StaffDashboard: React.FC = () => {
 
         <button
           onClick={fetchStaffData}
-          className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-black rounded-xl border border-blue-200 flex items-center gap-1.5 cursor-pointer shadow-sm"
+          className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-950 text-xs font-black rounded-xl border border-purple-300 flex items-center gap-1.5 cursor-pointer shadow-xs"
         >
-          <RefreshCw className="w-3.5 h-3.5" /> Refresh Queue
+          <RefreshCw className="w-3.5 h-3.5 text-purple-700" /> Refresh Queue
         </button>
+      </div>
+
+      {/* Faculty Student Roster Banner */}
+      <div className="p-6 rounded-3xl bg-purple-50/70 border border-purple-200 text-purple-950 shadow-xs">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-purple-950 bg-purple-100 px-2.5 py-0.5 rounded border border-purple-300">
+              FACULTY ACCESS CONTROL
+            </span>
+            <span className="text-xs text-purple-900 font-extrabold">
+              Authorized Students: <strong className="text-purple-950 text-sm font-black">{studentStats?.myStudents ?? 0}</strong>
+            </span>
+          </div>
+          <h3 className="text-xl font-black text-purple-950 flex items-center gap-2">
+            <Users className="w-5 h-5 text-purple-700" /> My Students Directory
+          </h3>
+          <p className="text-xs text-purple-900/90 font-bold max-w-xl leading-relaxed">
+            Access authorized student profiles registered in your assigned class and department. View academic profiles and track lab usage.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -110,15 +152,15 @@ export const StaffDashboard: React.FC = () => {
                   <div className="flex items-center gap-2 pt-2">
                     <button
                       onClick={() => handleBookingAction(b.id, 'APPROVED')}
-                      className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl transition-all flex items-center gap-1 cursor-pointer shadow-sm"
+                      className="px-3.5 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border border-emerald-300 text-xs font-black rounded-xl transition-all flex items-center gap-1 cursor-pointer shadow-xs"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Approve
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" /> Approve
                     </button>
                     <button
                       onClick={() => handleBookingAction(b.id, 'REJECTED')}
-                      className="px-3.5 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-black rounded-xl transition-all flex items-center gap-1 cursor-pointer shadow-sm"
+                      className="px-3.5 py-1.5 bg-red-100 hover:bg-red-200 text-red-950 border border-red-300 text-xs font-black rounded-xl transition-all flex items-center gap-1 cursor-pointer shadow-xs"
                     >
-                      <XCircle className="w-3.5 h-3.5" /> Reject
+                      <XCircle className="w-3.5 h-3.5 text-red-700" /> Reject
                     </button>
                   </div>
                 </div>

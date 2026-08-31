@@ -134,10 +134,16 @@ export const LabDetails: React.FC = () => {
                 ? 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&q=80&w=600'
                 : (lab.name || '').toUpperCase().includes('CADENCE')
                 ? 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=600'
+                : (lab.name || '').toUpperCase().includes('SYNOPSYS')
+                ? 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=600'
                 : (lab.name || '').toUpperCase().includes('MATLAB')
                 ? 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600'
                 : (lab.name || '').toUpperCase().includes('TEXAS')
                 ? 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=600'
+                : (lab.name || '').toUpperCase().includes('LIBRARY')
+                ? 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=600'
+                : (lab.name || '').toUpperCase().includes('ROBOTICS')
+                ? 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=600'
                 : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600'
             }
             alt={lab.name}

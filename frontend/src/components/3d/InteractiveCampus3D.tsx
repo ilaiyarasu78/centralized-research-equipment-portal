@@ -1,11 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { Wrench, ArrowRight, Sparkles, MapPin, Cpu, Database, Laptop, Radio } from 'lucide-react';
+import { Wrench, ArrowRight, Sparkles, MapPin, Cpu, Database, Laptop, Radio, X, Terminal, BookOpen, Layers } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../services/api';
 
 interface LabData {
   id: string;
+  dbId?: string;
   name: string;
   subtitle: string;
   position: [number, number, number];
@@ -18,14 +21,14 @@ interface LabData {
   isMain?: boolean;
 }
 
-// Bright, Light & Vibrant College Campus Buildings (Light Color Theme)
-const LABS_DATA: LabData[] = [
+// Bright, Light & Vibrant College Campus Buildings (All 8 Labs + Main Block)
+const DEFAULT_LABS_DATA: LabData[] = [
   {
     id: 'main-block',
     name: 'KARPAGAM MAIN BLOCK',
     subtitle: 'Academic & Administrative Headquarters',
-    position: [0, 0, -3.5],
-    size: [10, 4.2, 4],
+    position: [0, 0, -5],
+    size: [11, 4.5, 4.5],
     color: '#38bdf8', // Bright Sky Blue
     pinColor: '#0284c7',
     equipmentCount: 180,
@@ -37,7 +40,7 @@ const LABS_DATA: LabData[] = [
     id: 'idea-lab',
     name: 'AICTE IDEA LAB',
     subtitle: '3D Printing, Laser Cutting & PCB Milling',
-    position: [-6.5, 0, -0.5],
+    position: [-8.5, 0, -1.5],
     size: [4.2, 3.2, 3.2],
     color: '#c084fc', // Bright Light Purple
     pinColor: '#7c3aed',
@@ -49,7 +52,7 @@ const LABS_DATA: LabData[] = [
     id: 'cadence-lab',
     name: 'CADENCE VLSI LAB',
     subtitle: 'Microelectronics & Chip Design Suite',
-    position: [6.5, 0, -0.5],
+    position: [8.5, 0, -1.5],
     size: [4.2, 3.2, 3.2],
     color: '#22d3ee', // Bright Cyan
     pinColor: '#0891b2',
@@ -58,10 +61,34 @@ const LABS_DATA: LabData[] = [
     icon: <Cpu className="w-4 h-4 text-cyan-600" />,
   },
   {
+    id: 'synopsys-lab',
+    name: 'SYNOPSYS EDA LAB',
+    subtitle: 'RTL Synthesis & Chip Signoff Suite',
+    position: [12.5, 0, 3],
+    size: [3.8, 3.0, 3.0],
+    color: '#818cf8', // Bright Indigo
+    pinColor: '#4f46e5',
+    equipmentCount: 32,
+    availableCount: 10,
+    icon: <Terminal className="w-4 h-4 text-indigo-600" />,
+  },
+  {
+    id: 'matlab-lab',
+    name: 'MATLAB COMPUTING LAB',
+    subtitle: 'High Performance Compute & Analytics Server',
+    position: [-12.5, 0, 3],
+    size: [3.8, 3.0, 3.0],
+    color: '#fb923c', // Bright Orange
+    pinColor: '#ea580c',
+    equipmentCount: 50,
+    availableCount: 20,
+    icon: <Layers className="w-4 h-4 text-orange-600" />,
+  },
+  {
     id: 'robotics-lab',
     name: 'ROBOTICS & AI CENTER',
-    subtitle: 'Autonomous Drones & Industrial Arms',
-    position: [-6.5, 0, 4.2],
+    subtitle: 'Autonomous Drones & Industrial Manipulators',
+    position: [-7.5, 0, 5],
     size: [3.8, 2.8, 3],
     color: '#f472b6', // Bright Pink
     pinColor: '#db2777',
@@ -73,7 +100,7 @@ const LABS_DATA: LabData[] = [
     id: 'labview-lab',
     name: 'NI LABVIEW LAB',
     subtitle: 'Virtual Instrumentation & Embedded DAQ',
-    position: [6.5, 0, 4.2],
+    position: [7.5, 0, 5],
     size: [3.8, 2.8, 3],
     color: '#34d399', // Bright Mint Green
     pinColor: '#059669',
@@ -82,16 +109,28 @@ const LABS_DATA: LabData[] = [
     icon: <Laptop className="w-4 h-4 text-emerald-600" />,
   },
   {
+    id: 'texas-lab',
+    name: 'TEXAS INNOVATION LAB',
+    subtitle: 'IoT, Wireless Sensors & Microcontrollers',
+    position: [-2.8, 0, 6.2],
+    size: [4.0, 3.2, 3.2],
+    color: '#f87171', // Bright Red
+    pinColor: '#dc2626',
+    equipmentCount: 40,
+    availableCount: 18,
+    icon: <Cpu className="w-4 h-4 text-red-600" />,
+  },
+  {
     id: 'library-hub',
     name: 'DIGITAL LIBRARY & CLUSTER',
-    subtitle: 'High Performance Compute & 24/7 Digital Hub',
-    position: [0, 0, 4.5],
-    size: [5.2, 3, 3],
+    subtitle: 'IEEE E-Journals & 24/7 Digital Hub',
+    position: [2.8, 0, 6.2],
+    size: [4.8, 3, 3],
     color: '#fbbf24', // Bright Amber / Gold
     pinColor: '#d97706',
     equipmentCount: 65,
     availableCount: 28,
-    icon: <Sparkles className="w-4 h-4 text-amber-600" />,
+    icon: <BookOpen className="w-4 h-4 text-amber-600" />,
   },
 ];
 
@@ -245,7 +284,7 @@ const MapPin3D: React.FC<{
         <meshBasicMaterial color={lab.pinColor} transparent opacity={isHovered ? 0.7 : 0.4} side={THREE.DoubleSide} />
       </mesh>
 
-      {/* HTML 3D Interactive Tooltip Tag (White Theme) */}
+      {/* HTML 3D Interactive Tooltip Tag */}
       {isHovered && (
         <Html position={[0, 0.9, 0]} center distanceFactor={14}>
           <div className="bg-white text-slate-900 border border-slate-200 p-3 rounded-2xl shadow-2xl backdrop-blur-xl min-w-[170px] pointer-events-none animate-in fade-in zoom-in-95">
@@ -274,21 +313,21 @@ const CampusEnvironment: React.FC = () => {
       {/* Fresh Green Lawn Base Ground */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
         <planeGeometry args={[60, 60]} />
-        <meshStandardMaterial color="#86efac" roughness={0.8} /> {/* Fresh Light Green Lawn */}
+        <meshStandardMaterial color="#86efac" roughness={0.8} />
       </mesh>
 
       {/* Light Stone Campus Pedestrian Roads */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 1.8]} receiveShadow>
-        <planeGeometry args={[28, 3.2]} />
+        <planeGeometry args={[34, 3.2]} />
         <meshStandardMaterial color="#e2e8f0" roughness={0.4} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -1.8]} receiveShadow>
-        <planeGeometry args={[28, 2.5]} />
+        <planeGeometry args={[34, 2.5]} />
         <meshStandardMaterial color="#e2e8f0" roughness={0.4} />
       </mesh>
 
       {/* White Lane Markings */}
-      {[-10, -5, 0, 5, 10].map((xPos, idx) => (
+      {[-14, -8, -2, 4, 10].map((xPos, idx) => (
         <mesh key={idx} rotation={[-Math.PI / 2, 0, 0]} position={[xPos, 0.02, 1.8]}>
           <planeGeometry args={[1.6, 0.15]} />
           <meshBasicMaterial color="#ffffff" />
@@ -296,7 +335,7 @@ const CampusEnvironment: React.FC = () => {
       ))}
 
       {/* Light Street Lamp Posts */}
-      {[-9, 0, 9].map((x, i) => (
+      {[-12, -4, 4, 12].map((x, i) => (
         <group key={i} position={[x, 0, 3.8]}>
           <mesh position={[0, 1.2, 0]}>
             <cylinderGeometry args={[0.04, 0.06, 2.4, 8]} />
@@ -323,22 +362,82 @@ const CameraRig: React.FC = () => {
 };
 
 export const InteractiveCampus3D: React.FC = () => {
+  const navigate = useNavigate();
   const [hoveredLabId, setHoveredLabId] = useState<string | null>(null);
   const [selectedLab, setSelectedLab] = useState<LabData | null>(null);
+  const [labsData, setLabsData] = useState<LabData[]>(DEFAULT_LABS_DATA);
+  const [dbLabsMap, setDbLabsMap] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    fetchBackendLabs();
+  }, []);
+
+  const fetchBackendLabs = async () => {
+    try {
+      const res = await api.get('/labs');
+      if (res.data.success && Array.isArray(res.data.data)) {
+        const dbLabs = res.data.data;
+        const mapping: Record<string, string> = {};
+        
+        dbLabs.forEach((l: any) => {
+          const upper = (l.name || '').toUpperCase();
+          mapping[upper] = l.id;
+          if (upper.includes('IDEA')) mapping['idea-lab'] = l.id;
+          if (upper.includes('CADENCE')) mapping['cadence-lab'] = l.id;
+          if (upper.includes('SYNOPSYS')) mapping['synopsys-lab'] = l.id;
+          if (upper.includes('MATLAB')) mapping['matlab-lab'] = l.id;
+          if (upper.includes('LABVIEW')) mapping['labview-lab'] = l.id;
+          if (upper.includes('TEXAS')) mapping['texas-lab'] = l.id;
+          if (upper.includes('LIBRARY')) mapping['library-hub'] = l.id;
+          if (upper.includes('ROBOTICS')) mapping['robotics-lab'] = l.id;
+        });
+
+        setDbLabsMap(mapping);
+
+        setLabsData((prev) =>
+          prev.map((item) => {
+            const matchedDb = dbLabs.find((d: any) => {
+              const u = (d.name || '').toUpperCase();
+              return u.includes(item.name.split(' ')[0]) || (mapping[item.id] === d.id);
+            });
+
+            if (matchedDb) {
+              return {
+                ...item,
+                dbId: matchedDb.id,
+                equipmentCount: matchedDb.totalEquipments || item.equipmentCount,
+                availableCount: matchedDb.availableEquipments || item.availableCount
+              };
+            }
+            return item;
+          })
+        );
+      }
+    } catch (e) {
+      console.error('Failed to sync 3D map with backend labs', e);
+    }
+  };
+
+  const handleExploreLab = (lab: LabData) => {
+    const targetId = lab.dbId || dbLabsMap[lab.id] || Object.values(dbLabsMap)[0];
+    if (targetId) {
+      navigate(`/student/labs/${targetId}`);
+    } else {
+      navigate('/student/dashboard');
+    }
+  };
 
   return (
     <div className="w-full h-full relative select-none bg-slate-100">
-      {/* 3D WebGL Canvas Container (Daylight Sky Setup) */}
+      {/* 3D WebGL Canvas Container */}
       <Canvas
         shadows
-        camera={{ position: [9, 8, 12], fov: 42 }}
+        camera={{ position: [10, 9, 14], fov: 42 }}
         className="w-full h-full"
       >
-        {/* Soft Bright Sky Background & Daylight Fog */}
         <color attach="background" args={['#e0f2fe']} />
-        <fog attach="fog" args={['#e0f2fe', 18, 45]} />
+        <fog attach="fog" args={['#e0f2fe', 18, 48]} />
 
-        {/* Daylight Sun Lighting Setup */}
         <ambientLight intensity={2.0} />
         <directionalLight
           position={[15, 25, 15]}
@@ -349,21 +448,18 @@ export const InteractiveCampus3D: React.FC = () => {
         />
         <hemisphereLight skyColor="#e0f2fe" groundColor="#86efac" intensity={1.5} />
 
-        {/* Camera Rig & Orbit Controls */}
         <CameraRig />
         <OrbitControls
           enableZoom={true}
           maxPolarAngle={Math.PI / 2.15}
           minDistance={6}
-          maxDistance={22}
+          maxDistance={25}
           enablePan={false}
         />
 
-        {/* Ground Terrain */}
         <CampusEnvironment />
 
-        {/* 3D Campus Buildings */}
-        {LABS_DATA.map((lab) => (
+        {labsData.map((lab) => (
           <CampusBuilding3D
             key={lab.id}
             lab={lab}
@@ -373,8 +469,7 @@ export const InteractiveCampus3D: React.FC = () => {
           />
         ))}
 
-        {/* Glowing 3D Pins */}
-        {LABS_DATA.map((lab) => (
+        {labsData.map((lab) => (
           <MapPin3D
             key={`pin-${lab.id}`}
             lab={lab}
@@ -392,7 +487,7 @@ export const InteractiveCampus3D: React.FC = () => {
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
         </span>
         <span className="text-xs font-bold text-slate-800 bg-white/90 px-3 py-1 rounded-full border border-slate-200 shadow-sm backdrop-blur-md">
-          Daylight 3D Campus • Hover to Inspect
+          Daylight 3D Campus • Click Building to Explore
         </span>
       </div>
 
@@ -405,9 +500,51 @@ export const InteractiveCampus3D: React.FC = () => {
 
         <div className="bg-white/95 text-slate-900 border border-slate-200 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-md backdrop-blur-md hidden sm:flex items-center gap-2">
           <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-          <span>240+ Equipment Available Across Labs</span>
+          <span>8 Active Campus Labs Synchronized</span>
         </div>
       </div>
+
+      {/* Building Click Information Popup Card */}
+      {selectedLab && (
+        <div className="absolute top-6 right-6 z-40 bg-white/95 text-slate-900 border border-purple-200 rounded-3xl p-5 shadow-2xl backdrop-blur-xl max-w-xs animate-in fade-in zoom-in-95 pointer-events-auto">
+          <div className="flex items-start justify-between border-b border-slate-100 pb-3 mb-3">
+            <div className="flex items-center gap-2">
+              <span className="p-2 rounded-xl bg-purple-100 text-purple-700">
+                {selectedLab.icon}
+              </span>
+              <div>
+                <h4 className="text-sm font-black text-slate-900 leading-tight">{selectedLab.name}</h4>
+                <p className="text-[10px] text-slate-500 font-bold">{selectedLab.subtitle}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setSelectedLab(null)}
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="space-y-2 text-xs font-bold mb-4">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-purple-50 text-purple-900 border border-purple-100">
+              <span className="flex items-center gap-1.5"><Wrench className="w-3.5 h-3.5 text-purple-600" /> Equipment Items:</span>
+              <strong className="text-slate-900 font-black">{selectedLab.equipmentCount}</strong>
+            </div>
+            <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-100">
+              <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-emerald-600" /> Operational Status:</span>
+              <strong className="text-emerald-700 font-black">{selectedLab.availableCount} Ready</strong>
+            </div>
+          </div>
+
+          <button
+            onClick={() => handleExploreLab(selectedLab)}
+            className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            Explore Lab Facilities <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
+

@@ -1,18 +1,46 @@
 export type Role = 'STUDENT' | 'STAFF' | 'ADMIN';
 
+export interface StudentProfileData {
+  id: string;
+  userId: string;
+  registerNo: string;
+  department: string;
+  program: string;
+  year: number;
+  semester: number;
+  section: string;
+  batch: string;
+  admissionYear: number;
+  phone?: string;
+  personalEmail?: string;
+  college: string;
+  academicStatus: string;
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
   role: Role;
   avatar?: string;
+  accountStatus?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+  lastLoginAt?: string | Date;
+  createdAt?: string | Date;
   registerNo?: string;
   employeeId?: string;
   department?: string;
+  personalEmail?: string;
   phone?: string;
+  program?: string;
   year?: number;
+  semester?: number;
+  section?: string;
+  batch?: string;
+  admissionYear?: number;
   college?: string;
+  academicStatus?: string;
   position?: string;
+  studentProfile?: StudentProfileData;
 }
 
 export interface Lab {

@@ -18,6 +18,7 @@ export const ProfilePage: React.FC = () => {
   const [department, setDepartment] = useState(user?.department || 'Information Technology');
   const [college, setCollege] = useState(user?.college || 'Karpagam Institute of Technology');
   const [phone, setPhone] = useState(user?.phone || '');
+  const [personalEmail, setPersonalEmail] = useState(user?.personalEmail || '');
   const [avatar, setAvatar] = useState(user?.avatar && typeof user.avatar === 'string' && !user.avatar.includes('images.unsplash.com') ? user.avatar : '');
 
   useEffect(() => {
@@ -28,6 +29,7 @@ export const ProfilePage: React.FC = () => {
       setDepartment(user.department || 'Information Technology');
       setCollege(user.college || 'Karpagam Institute of Technology');
       setPhone(user.phone || '');
+      setPersonalEmail(user.personalEmail || '');
       setAvatar(user.avatar && typeof user.avatar === 'string' && !user.avatar.includes('images.unsplash.com') ? user.avatar : '');
     }
   }, [user]);
@@ -65,6 +67,7 @@ export const ProfilePage: React.FC = () => {
         department,
         college,
         phone,
+        personalEmail,
         avatar
       });
 
@@ -306,6 +309,24 @@ export const ProfilePage: React.FC = () => {
               />
             )}
           </div>
+
+          {/* Personal Email Address (Student Only) */}
+          {user?.role === 'STUDENT' && (
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Personal Email</span>
+              {!isEditing ? (
+                <p className="text-xs font-bold text-slate-900">{personalEmail || 'Not Provided'}</p>
+              ) : (
+                <input
+                  type="email"
+                  value={personalEmail}
+                  onChange={(e) => setPersonalEmail(e.target.value)}
+                  placeholder="Enter personal email address"
+                  className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-purple-600"
+                />
+              )}
+            </div>
+          )}
 
           {isEditing && (
             <div className="md:col-span-2 pt-2 flex justify-end gap-2">

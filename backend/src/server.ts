@@ -8,6 +8,9 @@ import bookingRoutes from './routes/bookingRoutes';
 import issueRoutes from './routes/issueRoutes';
 import notificationRoutes from './routes/notificationRoutes';
 import extraRoutes from './routes/extraRoutes';
+import studentRoutes from './routes/studentRoutes';
+import adminStudentRoutes from './routes/adminStudentRoutes';
+import facultyStudentRoutes from './routes/facultyStudentRoutes';
 import { errorHandler } from './middleware/errorMiddleware';
 
 dotenv.config();
@@ -17,13 +20,16 @@ const PORT = process.env.PORT || 5000;
 
 // Core Middlewares
 app.use(cors({
-  origin: '*',
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/students', studentRoutes);
+app.use('/api/admin', adminStudentRoutes);
+app.use('/api/faculty', facultyStudentRoutes);
 app.use('/api/labs', labRoutes);
 app.use('/api/equipment', equipmentRoutes);
 app.use('/api/bookings', bookingRoutes);

@@ -7,7 +7,8 @@ import {
   createLostFoundItem,
   submitFeedback,
   getAdminStats,
-  getAllUsers
+  getAllUsers,
+  deleteUser
 } from '../controllers/extraController';
 import { authenticateToken, requireRole } from '../middleware/authMiddleware';
 
@@ -25,5 +26,6 @@ router.post('/feedback', authenticateToken, submitFeedback);
 
 router.get('/admin/stats', authenticateToken, requireRole(['ADMIN', 'STAFF']), getAdminStats);
 router.get('/admin/users', authenticateToken, requireRole(['ADMIN']), getAllUsers);
+router.delete('/admin/users/:userId', authenticateToken, requireRole(['ADMIN']), deleteUser);
 
 export default router;

@@ -26,8 +26,9 @@ async function main() {
   const passwordHash = await bcrypt.hash('Student@123', 10);
   const staffPasswordHash = await bcrypt.hash('Staff@123', 10);
   const adminPasswordHash = await bcrypt.hash('Admin@123', 10);
+  const gopinathPasswordHash = await bcrypt.hash('gopinathece9566', 10);
 
-  // 1. Create Admin User
+  // 1. Create Admin Users
   const adminUser = await prisma.user.create({
     data: {
       name: 'Dr. S. Arunkumar',
@@ -39,6 +40,22 @@ async function main() {
         create: {
           department: 'Campus Administration & IT Services',
           phone: '+91 98765 43210'
+        }
+      }
+    }
+  });
+
+  const gopinathAdmin = await prisma.user.create({
+    data: {
+      name: 'Gopinath (ECE Administrator)',
+      email: 'gopinath.ece@karpagamtech.ac.in',
+      password: gopinathPasswordHash,
+      role: 'ADMIN',
+      avatar: null,
+      adminProfile: {
+        create: {
+          department: 'Electronics & Communication Engineering',
+          phone: '+91 95660 12345'
         }
       }
     }
@@ -239,7 +256,21 @@ async function main() {
     }
   });
 
-  // 5. Create Equipment
+  const roboticsLab = await prisma.lab.create({
+    data: {
+      name: 'ROBOTICS LAB',
+      code: 'LAB-RAI-08',
+      category: 'Robotics & AI',
+      description: 'Autonomous drones, industrial arm manipulation, edge AI perception & ROS development.',
+      location: 'Innovation Wing, 3rd Floor',
+      capacity: 35,
+      openingHours: '08:30 AM - 08:30 PM',
+      status: 'OPERATIONAL',
+      image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=800'
+    }
+  });
+
+  // 5. Create Equipment for ALL Labs
   const ender3 = await prisma.equipment.create({
     data: {
       name: '3D Printer - Ender 3',
@@ -267,6 +298,51 @@ async function main() {
       specifications: 'Spindle: 28,000 RPM, Trace width: down to 6 mil',
       status: 'AVAILABLE',
       image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=400'
+    }
+  });
+
+  const cadenceWorkstation = await prisma.equipment.create({
+    data: {
+      name: 'Cadence Virtuoso EDA Workstation',
+      equipmentId: 'EQ-CAD-EDA-01',
+      category: 'VLSI Design',
+      labId: cadenceLab.id,
+      manufacturer: 'Cadence Systems',
+      model: 'IC 6.1.8 Suite',
+      description: 'Custom IC design workstation with analog/mixed-signal layout & simulation tools.',
+      specifications: '32-Core Intel Xeon, 128GB RAM, Dual 4K Monitors',
+      status: 'AVAILABLE',
+      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=400'
+    }
+  });
+
+  const synopsysCompiler = await prisma.equipment.create({
+    data: {
+      name: 'Synopsys Design Compiler Station',
+      equipmentId: 'EQ-SYN-DC-01',
+      category: 'EDA Suite',
+      labId: synopsysLab.id,
+      manufacturer: 'Synopsys Inc',
+      model: 'Design Compiler NXT',
+      description: 'RTL synthesis & logic optimization station for ultra-low-power VLSI chips.',
+      specifications: 'Linux RHEL 8, 64-Core Threadripper, Synopsys Synthesis License',
+      status: 'AVAILABLE',
+      image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=400'
+    }
+  });
+
+  const matlabHPC = await prisma.equipment.create({
+    data: {
+      name: 'MATLAB High-Performance Compute Server',
+      equipmentId: 'EQ-MAT-HPC-01',
+      category: 'Computing',
+      labId: matlabLab.id,
+      manufacturer: 'MathWorks / Dell PowerEdge',
+      model: 'R750 Parallel Server',
+      description: 'Parallel computing cluster node for deep learning, signal processing and matrix math.',
+      specifications: 'NVIDIA A100 80GB GPU, Parallel Computing Toolbox, 256GB RAM',
+      status: 'AVAILABLE',
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=400'
     }
   });
 
@@ -300,7 +376,138 @@ async function main() {
     }
   });
 
-  // 6. Create Bookings
+  const tiLaunchpad = await prisma.equipment.create({
+    data: {
+      name: 'Texas Instruments LaunchPad IoT Kit',
+      equipmentId: 'EQ-TI-IOT-01',
+      category: 'Embedded Systems',
+      labId: texasLab.id,
+      manufacturer: 'Texas Instruments',
+      model: 'CC2650 SimpleLink Kit',
+      description: 'Wireless MCU development kit supporting Bluetooth Low Energy, Zigbee and Thread.',
+      specifications: 'ARM Cortex-M4F, Ultra-low-power radio, Sensor BoosterPack included',
+      status: 'AVAILABLE',
+      image: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=400'
+    }
+  });
+
+  const libraryStation = await prisma.equipment.create({
+    data: {
+      name: 'Digital Library IEEE & E-Journal Station',
+      equipmentId: 'EQ-LIB-EJ-01',
+      category: 'Knowledge Center',
+      labId: libraryLab.id,
+      manufacturer: 'Dell OptiPlex',
+      model: '7090 Ultra',
+      description: 'Dedicated high-speed terminal for accessing IEEE Xplore, ScienceDirect and Springer.',
+      specifications: 'High-res dual display, Gigabit Ethernet, Digital Archival software',
+      status: 'AVAILABLE',
+      image: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=400'
+    }
+  });
+
+  const roboticsArm = await prisma.equipment.create({
+    data: {
+      name: '6-DOF Industrial Robotic Arm Trainer',
+      equipmentId: 'EQ-RAI-ARM-01',
+      category: 'Robotics & AI',
+      labId: roboticsLab.id,
+      manufacturer: 'Niryo',
+      model: 'Ned2 Robotic Arm',
+      description: '6-axis collaborative robot arm for vision-guided pick-and-place and ROS 2 control.',
+      specifications: 'Payload: 500g, Reach: 440mm, Integrated HD Camera & ROS 2 driver',
+      status: 'AVAILABLE',
+      image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=400'
+    }
+  });
+
+  // 6. Create Campus Spatial Map Locations
+  await prisma.campusLocation.createMany({
+    data: [
+      {
+        name: 'AICTE IDEA LAB',
+        code: 'LOC-IDEA-01',
+        category: 'Innovation Hub',
+        description: 'Prototyping, PCB milling & 3D printing center',
+        floor: '1st Floor',
+        lat: 12.9718,
+        lng: 77.5942,
+        labId: ideaLab.id
+      },
+      {
+        name: 'CADENCE LAB',
+        code: 'LOC-CAD-02',
+        category: 'VLSI Design',
+        description: 'Advanced microelectronics & chip design lab',
+        floor: '2nd Floor',
+        lat: 12.9722,
+        lng: 77.5950,
+        labId: cadenceLab.id
+      },
+      {
+        name: 'SYNOPSYS LAB',
+        code: 'LOC-SYN-03',
+        category: 'EDA Suite',
+        description: 'Comprehensive chip sign-off & EDA tools',
+        floor: '2nd Floor',
+        lat: 12.9720,
+        lng: 77.5952,
+        labId: synopsysLab.id
+      },
+      {
+        name: 'MATLAB LAB',
+        code: 'LOC-MAT-04',
+        category: 'Computing',
+        description: 'High-performance computing & data analytics hub',
+        floor: '3rd Floor',
+        lat: 12.9712,
+        lng: 77.5940,
+        labId: matlabLab.id
+      },
+      {
+        name: 'LABVIEW LAB',
+        code: 'LOC-LVIEW-05',
+        category: 'Virtual Instrumentation',
+        description: 'Test, DAQ & measurement instrumentation lab',
+        floor: 'Ground Floor',
+        lat: 12.9715,
+        lng: 77.5944,
+        labId: labviewLab.id
+      },
+      {
+        name: 'TEXAS INNOVATION LAB',
+        code: 'LOC-TI-06',
+        category: 'Embedded Systems',
+        description: 'IoT, microcontroller & wireless sensor center',
+        floor: '4th Floor',
+        lat: 12.9725,
+        lng: 77.5948,
+        labId: texasLab.id
+      },
+      {
+        name: 'CENTRAL LIBRARY',
+        code: 'LOC-LIB-07',
+        category: 'Knowledge Center',
+        description: 'Digital research library & e-journal facility',
+        floor: 'Ground Floor',
+        lat: 12.9710,
+        lng: 77.5946,
+        labId: libraryLab.id
+      },
+      {
+        name: 'ROBOTICS & AI CENTER',
+        code: 'LOC-RAI-08',
+        category: 'Robotics & AI',
+        description: 'Drones, robotic manipulators & edge AI facility',
+        floor: '3rd Floor',
+        lat: 12.9724,
+        lng: 77.5943,
+        labId: roboticsLab.id
+      }
+    ]
+  });
+
+  // 7. Create Bookings
   await prisma.booking.createMany({
     data: [
       {
@@ -326,7 +533,7 @@ async function main() {
     ]
   });
 
-  console.log('✅ Database Seeded with 24ITA17 and Clean Lab Assets!');
+  console.log('✅ Database Seeded with 24ITA17, All 8 Labs, Equipment & Map Locations!');
 }
 
 main()
@@ -337,3 +544,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+

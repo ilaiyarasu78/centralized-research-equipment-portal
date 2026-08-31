@@ -9,8 +9,8 @@ export const LoginPage: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [loginType, setLoginType] = useState<'STUDENT' | 'STAFF' | 'ADMIN'>('STUDENT');
-  const [identifier, setIdentifier] = useState('23CSE001');
-  const [password, setPassword] = useState('Student@123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -138,20 +138,7 @@ export const LoginPage: React.FC = () => {
     setPassword('');
   };
 
-  const handleQuickDemoFill = (type: 'STUDENT' | 'STAFF' | 'ADMIN') => {
-    setLoginType(type);
-    setError(null);
-    if (type === 'STUDENT') {
-      setIdentifier('24ita17');
-      setPassword('Student@123');
-    } else if (type === 'STAFF') {
-      setIdentifier('STF001');
-      setPassword('Staff@123');
-    } else {
-      setIdentifier('admin@smartcampus.edu');
-      setPassword('Admin@123');
-    }
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -261,7 +248,7 @@ export const LoginPage: React.FC = () => {
                 onClick={() => handleTabChange('STUDENT')}
                 className={`py-2 rounded-xl text-xs font-bold transition-all ${
                   loginType === 'STUDENT'
-                    ? 'bg-purple-600 text-white shadow-md'
+                    ? 'bg-purple-100 text-purple-950 border border-purple-300 shadow-xs font-black'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -272,7 +259,7 @@ export const LoginPage: React.FC = () => {
                 onClick={() => handleTabChange('STAFF')}
                 className={`py-2 rounded-xl text-xs font-bold transition-all ${
                   loginType === 'STAFF'
-                    ? 'bg-blue-600 text-white shadow-md'
+                    ? 'bg-purple-100 text-purple-950 border border-purple-300 shadow-xs font-black'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -283,7 +270,7 @@ export const LoginPage: React.FC = () => {
                 onClick={() => handleTabChange('ADMIN')}
                 className={`py-2 rounded-xl text-xs font-bold transition-all ${
                   loginType === 'ADMIN'
-                    ? 'bg-slate-900 text-white shadow-md'
+                    ? 'bg-purple-100 text-purple-950 border border-purple-300 shadow-xs font-black'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -334,40 +321,14 @@ export const LoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 cursor-pointer mt-2"
+                className="w-full py-3 bg-purple-100 hover:bg-purple-200 text-purple-950 border border-purple-300 font-black text-xs rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer mt-2"
               >
                 {loading ? 'Authenticating...' : `Sign In to ${loginType === 'STUDENT' ? 'Student' : loginType === 'STAFF' ? 'Staff' : 'Admin'} Portal`}
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 text-purple-700" />
               </button>
             </form>
 
-            {/* Quick Demo Credentials Footer */}
-            <div className="mt-6 pt-4 border-t border-slate-100 text-center">
-              <p className="text-[11px] text-slate-500 font-medium">Demo Quick Test Credentials:</p>
-              <div className="flex items-center justify-center gap-2 mt-2">
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoFill('STUDENT')}
-                  className="px-2.5 py-1 rounded bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-200 hover:bg-purple-100"
-                >
-                  Student Demo
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoFill('STAFF')}
-                  className="px-2.5 py-1 rounded bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200 hover:bg-blue-100"
-                >
-                  Staff Demo
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoFill('ADMIN')}
-                  className="px-2.5 py-1 rounded bg-slate-100 text-slate-800 text-[10px] font-bold border border-slate-300 hover:bg-slate-200"
-                >
-                  Admin Demo
-                </button>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>

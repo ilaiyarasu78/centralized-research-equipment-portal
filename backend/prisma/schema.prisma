@@ -14,6 +14,8 @@ model User {
   password       String
   role           String          @default("STUDENT") // STUDENT, STAFF, ADMIN
   avatar         String?
+  accountStatus  String          @default("ACTIVE") // ACTIVE, INACTIVE, SUSPENDED
+  lastLoginAt    DateTime?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -33,24 +35,34 @@ model User {
 }
 
 model StudentProfile {
-  id         String   @id @default(uuid())
-  userId     String   @unique
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  registerNo String   @unique
-  department String
-  year       Int
-  phone      String?
-  college    String   @default("College of Engineering & Technology")
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  registerNo     String   @unique
+  department     String
+  program        String   @default("B.E.")
+  year           Int
+  semester       Int      @default(1)
+  section        String   @default("A")
+  batch          String   @default("2024-2028")
+  admissionYear  Int      @default(2024)
+  phone          String?
+  personalEmail  String?
+  college        String   @default("Karpagam Institute of Technology")
+  academicStatus String   @default("REGULAR")
 }
 
 model StaffProfile {
-  id         String   @id @default(uuid())
-  userId     String   @unique
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  employeeId String   @unique
-  department String
-  phone      String?
-  position   String   @default("Lab In-Charge")
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId         String   @unique
+  department         String
+  phone              String?
+  position           String   @default("Lab In-Charge")
+  assignedDepartment String?
+  assignedYear       Int?
+  assignedSection    String?
 }
 
 model AdminProfile {

@@ -23,35 +23,25 @@ export const LoginForm: React.FC = () => {
     setPassword('');
   };
 
-  const handleQuickDemoFill = (demoRole: 'STUDENT' | 'STAFF' | 'ADMIN') => {
-    setRole(demoRole);
-    setError(null);
-    if (demoRole === 'STUDENT') {
-      setIdentifier('24ita17');
-      setPassword('Student@123');
-    } else if (demoRole === 'STAFF') {
-      setIdentifier('STF001');
-      setPassword('Staff@123');
-    } else {
-      setIdentifier('admin@smartcampus.edu');
-      setPassword('Admin@123');
-    }
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
+    // Strip spaces for ease of entry
+    const cleanIdentifier = identifier.trim().replace(/\s+/g, '');
+
     try {
       if (role === 'STUDENT') {
-        await loginStudent(identifier, password);
+        await loginStudent(cleanIdentifier, password);
         navigate('/student/dashboard');
       } else if (role === 'STAFF') {
-        await loginStaff(identifier, password);
+        await loginStaff(cleanIdentifier, password);
         navigate('/staff/dashboard');
       } else {
-        await loginAdmin(identifier, password);
+        await loginAdmin(cleanIdentifier, password);
         navigate('/admin/dashboard');
       }
     } catch (err: any) {
@@ -308,33 +298,7 @@ export const LoginForm: React.FC = () => {
               </form>
             </div>
 
-            {/* Quick Demo Fill Options */}
-            <div className="mt-5 pt-3 border-t border-slate-100">
-              <p className="text-[10px] text-slate-500 font-semibold text-center mb-1.5">Auto-fill Demo Credentials:</p>
-              <div className="flex items-center justify-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoFill('STUDENT')}
-                  className="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold hover:bg-purple-100 transition-all cursor-pointer"
-                >
-                  Student Demo
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoFill('STAFF')}
-                  className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold hover:bg-blue-100 transition-all cursor-pointer"
-                >
-                  Staff Demo
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoFill('ADMIN')}
-                  className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-200 text-[10px] font-bold hover:bg-slate-200 transition-all cursor-pointer"
-                >
-                  Admin Demo
-                </button>
-              </div>
-            </div>
+
 
             {/* Footer text inside Card */}
             <div className="mt-4 text-center text-xs text-slate-600 font-medium">
