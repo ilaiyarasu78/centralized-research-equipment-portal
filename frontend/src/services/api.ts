@@ -439,6 +439,14 @@ api.interceptors.response.use(
         }
 
         const isDefault = regNo === '24ita17' || regNo === '23cse001';
+        if (!isDefault) {
+          return Promise.reject({
+            response: {
+              status: 401,
+              data: { success: false, message: 'Invalid Register Number or password (Demo Mode).' }
+            }
+          });
+        }
         const cleanRegNo = (body.registerNo || '24ITA17').trim();
         return {
           data: {
@@ -491,6 +499,14 @@ api.interceptors.response.use(
         }
 
         const isDefault = empId === 'stf001' || empId === 'stf002';
+        if (!isDefault) {
+          return Promise.reject({
+            response: {
+              status: 401,
+              data: { success: false, message: 'Invalid Employee ID or password (Demo Mode).' }
+            }
+          });
+        }
         const cleanEmpId = (body.employeeId || 'STF001').trim();
         return {
           data: {
