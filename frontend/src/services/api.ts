@@ -667,6 +667,9 @@ api.interceptors.response.use(
           const studentId = urlParts[urlParts.length - 1];
 
           // Remove the student from mock_registered_users in localStorage
+          if (studentId === 'std-101') {
+            localStorage.setItem('default_student_deleted', 'true');
+          }
           const mockRegisteredUsers = JSON.parse(localStorage.getItem('mock_registered_users') || '[]');
           const filtered = mockRegisteredUsers.filter((u: any) => u.id !== studentId);
           localStorage.setItem('mock_registered_users', JSON.stringify(filtered));
@@ -726,10 +729,13 @@ api.interceptors.response.use(
           }
         };
 
+        const isDefaultDeleted = localStorage.getItem('default_student_deleted') === 'true';
+        const dataList = isDefaultDeleted ? registeredStudents : [defaultStudent, ...registeredStudents];
+
         return {
           data: {
             success: true,
-            data: [defaultStudent, ...registeredStudents]
+            data: dataList
           }
         };
       }
@@ -801,10 +807,13 @@ api.interceptors.response.use(
           }
         };
 
+        const isDefaultDeleted = localStorage.getItem('default_student_deleted') === 'true';
+        const dataList = isDefaultDeleted ? registeredStudents : [defaultStudent, ...registeredStudents];
+
         return {
           data: {
             success: true,
-            data: [defaultStudent, ...registeredStudents]
+            data: dataList
           }
         };
       }
@@ -837,6 +846,9 @@ api.interceptors.response.use(
           const urlParts = url.split('/');
           const userId = urlParts[urlParts.length - 1];
 
+          if (userId === 'std-101') {
+            localStorage.setItem('default_student_deleted', 'true');
+          }
           const mockRegisteredUsers = JSON.parse(localStorage.getItem('mock_registered_users') || '[]');
           const filtered = mockRegisteredUsers.filter((u: any) => u.id !== userId);
           localStorage.setItem('mock_registered_users', JSON.stringify(filtered));
@@ -863,10 +875,15 @@ api.interceptors.response.use(
           { id: 'adm-101', name: 'Admin User', email: 'admin@smartcampus.edu', role: 'ADMIN' }
         ];
 
+        const isDefaultDeleted = localStorage.getItem('default_student_deleted') === 'true';
+        const filteredDefaultUsers = isDefaultDeleted 
+          ? defaultUsers.filter(u => u.id !== 'std-101') 
+          : defaultUsers;
+
         return {
           data: {
             success: true,
-            data: [...defaultUsers, ...registeredUsersList]
+            data: [...filteredDefaultUsers, ...registeredUsersList]
           }
         };
       }
